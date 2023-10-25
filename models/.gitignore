@@ -1,0 +1,6 @@
+
+# Models folder
+**/models/*
+
+# macOS
+.DS_Store
