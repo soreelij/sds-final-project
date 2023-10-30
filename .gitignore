@@ -1,5 +1,8 @@
-# Models folder
+# Models
 **/models/*
+*.chk
+*.pth
+*.model
 
 # macOS
 .DS_Store
