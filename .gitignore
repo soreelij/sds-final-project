@@ -10,5 +10,5 @@
 .idea/
 
 # VS Code extension
-**/node_modules/*
-**/.vscode/
+node_modules/
+.vscode/
