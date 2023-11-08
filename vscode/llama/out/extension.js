@@ -29,7 +29,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
 const vscode = __importStar(require("vscode"));
 const axios_1 = __importDefault(require("axios"));
+let timeout; // Declare timeout here
 function activate(context) {
+    // Code completion command
     const command = 'llama.codeCompletion';
     const editor = vscode.window.activeTextEditor;
     const selection = editor?.selection;
@@ -56,7 +58,37 @@ function activate(context) {
             });
         }
     };
+    let timeoutId = null;
+    const provider = {
+        provideInlineCompletionItems(document, position) {
+            const linePrefix = document.lineAt(position).text.substr(0, position.character);
+            const url = 'http://localhost:8000/v1/engines/copilot-codex/completions';
+            console.log("Requesting completion for " + linePrefix);
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            return new Promise((resolve, reject) => {
+                timeoutId = setTimeout(() => {
+                    axios_1.default.post(url, {
+                        "prompt": linePrefix,
+                        "stop": ["\n\n"],
+                        "max_tokens": 128,
+                        "temperature": 0
+                    }).then(function (response) {
+                        const suggestion = response.data.choices[0].text;
+                        console.log("suggested: " + suggestion);
+                        const inlineCompletionItem = new vscode.InlineCompletionItem(suggestion, new vscode.Range(position, position));
+                        resolve([inlineCompletionItem]);
+                    }).catch(function (error) {
+                        console.log(error);
+                        resolve([]);
+                    });
+                }, 1500); // delay of 2000ms
+            });
+        }
+    };
     context.subscriptions.push(vscode.commands.registerCommand(command, commandHandler));
+    vscode.languages.registerInlineCompletionItemProvider({ pattern: '**' }, provider);
 }
 exports.activate = activate;
 function deactivate() { }
