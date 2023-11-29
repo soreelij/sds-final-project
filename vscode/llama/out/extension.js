@@ -31,28 +31,26 @@ const vscode = __importStar(require("vscode"));
 const axios_1 = __importDefault(require("axios"));
 let timeout; // Declare timeout here
 function activate(context) {
-    // Code completion command
-    const command = 'llama.codeCompletion';
+    // Code explain command
+    const command = 'llama.explainCode';
     const editor = vscode.window.activeTextEditor;
     const selection = editor?.selection;
     const url = 'http://localhost:8000/v1/engines/copilot-codex/completions';
     const commandHandler = () => {
+        console.log("Command issued: Explain Code");
         if (selection && !selection.isEmpty) {
             const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
             const highlighted = editor.document.getText(selectionRange);
-            console.log("Requesting completion for " + highlighted);
+            console.log("Requesting explanation for " + highlighted);
             axios_1.default.post(url, {
                 "prompt": highlighted,
                 "stop": ["\n\n"],
-                "max_tokens": 128,
+                "max_tokens": 150,
                 "temperature": 0
             }).then(function (response) {
-                const suggestion = response.data.choices[0].text;
-                console.log(suggestion);
-                const finalText = highlighted + suggestion;
-                editor.edit(editBuilder => {
-                    editBuilder.replace(selection, finalText);
-                });
+                const explanation = response.data.choices[0].text;
+                console.log("Response: " + explanation);
+                const finalText = explanation;
             }).catch(function (error) {
                 console.log(error);
             });
@@ -83,7 +81,7 @@ function activate(context) {
                         console.log(error);
                         resolve([]);
                     });
-                }, 1500); // delay of 2000ms
+                }, 2000); // delay of 2000ms 
             });
         }
     };

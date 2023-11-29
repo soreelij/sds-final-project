@@ -11,4 +11,6 @@
 3. Install [llama-cpp-python](https://github.com/abetlen/llama-cpp-python.git) using `pip`.
 
 4. Run the web server using this command `$ python3 -m llama_cpp.server --model api/models/code/codellama-7b.gguf`
+
+5. Once the API is running, view specifications at http://localhost:8000/docs
     

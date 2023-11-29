@@ -16,14 +16,14 @@
   "contributes": {
     "commands": [
       {
-        "command": "llama.codeCompletion",
-        "title": "Llama: Suggest Code Completion"
+        "command": "llama.explainCode",
+        "title": "Llama: Explain Code"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "llama.codeCompletion",
+          "command": "llama.explainCode",
           "when": "editorTextFocus && editorHasSelection",
           "group": "Llama"
         }

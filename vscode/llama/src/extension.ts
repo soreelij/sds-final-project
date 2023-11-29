@@ -5,9 +5,9 @@ let timeout: NodeJS.Timeout | undefined; // Declare timeout here
 
 export function activate(context: vscode.ExtensionContext) {
 
-	// Code completion command
+	// Code explain command
 
-	const command = 'llama.codeCompletion';
+	const command = 'llama.explainCode';
 	const editor = vscode.window.activeTextEditor;
 
 	const selection = editor?.selection
@@ -16,25 +16,24 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const commandHandler = () => {
 
+		console.log("Command issued: Explain Code")
+
 		if (selection && !selection.isEmpty) {
 
 			const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
 			const highlighted = editor.document.getText(selectionRange);
 
-			console.log("Requesting completion for " + highlighted);
+			console.log("Requesting explanation for " + highlighted);
 
 			axios.post(url, {
 				"prompt": highlighted,
 				"stop": ["\n\n"],
-				"max_tokens": 128,
+				"max_tokens": 150,
 				"temperature": 0
 			}).then(function (response) {
-				const suggestion = response.data.choices[0].text
-				console.log(suggestion);
-				const finalText = highlighted + suggestion;
-				editor.edit(editBuilder => {
-					editBuilder.replace(selection, finalText);
-				})
+				const explanation = response.data.choices[0].text
+				console.log("Response: " + explanation);
+				const finalText = explanation;
 			}).catch(function (error) {
 				console.log(error);
 			});
@@ -70,14 +69,13 @@ export function activate(context: vscode.ExtensionContext) {
 						console.log(error);
 						resolve([]);
 					});
-				}, 1500); // delay of 1500ms
+				}, 2000); // delay of 2000ms 
 			});
 		}
 	}
 
 	context.subscriptions.push(vscode.commands.registerCommand(command, commandHandler));
-
-		vscode.languages.registerInlineCompletionItemProvider({ pattern: '**' }, provider);
+	vscode.languages.registerInlineCompletionItemProvider({ pattern: '**' }, provider);
 
 	}
 
