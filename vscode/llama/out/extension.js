@@ -31,31 +31,9 @@ const vscode = __importStar(require("vscode"));
 const axios_1 = __importDefault(require("axios"));
 let timeout; // Declare timeout here
 function activate(context) {
-    // Code explain command
-    const command = 'llama.explainCode';
     const editor = vscode.window.activeTextEditor;
     const selection = editor?.selection;
     const url = 'http://localhost:8000/v1/engines/copilot-codex/completions';
-    const commandHandler = () => {
-        console.log("Command issued: Explain Code");
-        if (selection && !selection.isEmpty) {
-            const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
-            const highlighted = editor.document.getText(selectionRange);
-            console.log("Requesting explanation for " + highlighted);
-            axios_1.default.post(url, {
-                "prompt": highlighted,
-                "stop": ["\n\n"],
-                "max_tokens": 150,
-                "temperature": 0
-            }).then(function (response) {
-                const explanation = response.data.choices[0].text;
-                console.log("Response: " + explanation);
-                const finalText = explanation;
-            }).catch(function (error) {
-                console.log(error);
-            });
-        }
-    };
     let timeoutId = null;
     const provider = {
         provideInlineCompletionItems(document, position) {
@@ -68,7 +46,7 @@ function activate(context) {
             return new Promise((resolve, reject) => {
                 timeoutId = setTimeout(() => {
                     axios_1.default.post(url, {
-                        "prompt": linePrefix,
+                        "prompt": "def sum_two_numbers",
                         "stop": ["\n\n"],
                         "max_tokens": 128,
                         "temperature": 0
@@ -85,7 +63,6 @@ function activate(context) {
             });
         }
     };
-    context.subscriptions.push(vscode.commands.registerCommand(command, commandHandler));
     vscode.languages.registerInlineCompletionItemProvider({ pattern: '**' }, provider);
 }
 exports.activate = activate;

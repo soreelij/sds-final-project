@@ -5,40 +5,11 @@ let timeout: NodeJS.Timeout | undefined; // Declare timeout here
 
 export function activate(context: vscode.ExtensionContext) {
 
-	// Code explain command
-
-	const command = 'llama.explainCode';
 	const editor = vscode.window.activeTextEditor;
 
 	const selection = editor?.selection
 
 	const url = 'http://localhost:8000/v1/engines/copilot-codex/completions';
-
-	const commandHandler = () => {
-
-		console.log("Command issued: Explain Code")
-
-		if (selection && !selection.isEmpty) {
-
-			const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
-			const highlighted = editor.document.getText(selectionRange);
-
-			console.log("Requesting explanation for " + highlighted);
-
-			axios.post(url, {
-				"prompt": highlighted,
-				"stop": ["\n\n"],
-				"max_tokens": 150,
-				"temperature": 0
-			}).then(function (response) {
-				const explanation = response.data.choices[0].text
-				console.log("Response: " + explanation);
-				const finalText = explanation;
-			}).catch(function (error) {
-				console.log(error);
-			});
-		}
-	};
 
 	let timeoutId: NodeJS.Timeout | null = null;
 
@@ -56,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 			return new Promise((resolve, reject) => {
 				timeoutId = setTimeout(() => {
 					axios.post(url, {
-						"prompt": linePrefix,
+						"prompt": "def sum_two_numbers",
 						"stop": ["\n\n"],
 						"max_tokens": 128,
 						"temperature": 0
@@ -74,7 +45,6 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}
 
-	context.subscriptions.push(vscode.commands.registerCommand(command, commandHandler));
 	vscode.languages.registerInlineCompletionItemProvider({ pattern: '**' }, provider);
 
 	}

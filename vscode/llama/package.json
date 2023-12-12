@@ -15,18 +15,11 @@
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "llama.explainCode",
-        "title": "Llama: Explain Code"
-      }
+
     ],
     "menus": {
       "editor/context": [
-        {
-          "command": "llama.explainCode",
-          "when": "editorTextFocus && editorHasSelection",
-          "group": "Llama"
-        }
+
       ]
     }
   },
