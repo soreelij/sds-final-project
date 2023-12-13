@@ -1,4 +1,4 @@
-# [NAME IN PROGRESS] 🦙 API
+# Fluffy 🦙 API
 
 ### Steps to get the project running:
 1. Download [Llama Code](https://ai.meta.com/llama/) from Meta's website.
@@ -11,4 +11,6 @@
 3. Install [llama-cpp-python](https://github.com/abetlen/llama-cpp-python.git) using `pip`.
 
 4. Run the web server using this command `$ python3 -m llama_cpp.server --model api/models/code/codellama-7b.gguf`
+
+5. Once the API is running, view specifications at http://localhost:8000/docs
     
