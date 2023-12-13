@@ -1,4 +1,4 @@
-# [NAME IN PROGRESS] 🦙 API
+# Fluffy 🦙 API
 
 ### Steps to get the project running:
 1. Download [Llama Code](https://ai.meta.com/llama/) from Meta's website.
